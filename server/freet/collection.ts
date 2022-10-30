@@ -2,6 +2,8 @@ import type {HydratedDocument, Types} from 'mongoose';
 import type {Freet} from './model';
 import FreetModel from './model';
 import UserCollection from '../user/collection';
+import DomCollection from '../dom/collection';
+
 
 /**
  * This files contains a class that has the functionality to explore freets
@@ -16,19 +18,25 @@ class FreetCollection {
    * Add a freet to the collection
    *
    * @param {string} authorId - The id of the author of the freet
+   * @param {string} domId - The id of the dom of the freet
    * @param {string} content - The id of the content of the freet
    * @return {Promise<HydratedDocument<Freet>>} - The newly created freet
    */
-  static async addOne(authorId: Types.ObjectId | string, content: string): Promise<HydratedDocument<Freet>> {
+   static async addOne(authorId: Types.ObjectId | string, domId: Types.ObjectId | string, content: string): Promise<HydratedDocument<Freet>> {
     const date = new Date();
     const freet = new FreetModel({
       authorId,
+      domId,
       dateCreated: date,
       content,
       dateModified: date
     });
     await freet.save(); // Saves freet to MongoDB
-    return freet.populate('authorId');
+    return freet.populate('domId');
+  }
+  
+  static async findOneByAuthorIdAndFreetId(authorId: Types.ObjectId | string, freetId: Types.ObjectId |string) : Promise<HydratedDocument<Freet>> {
+    return FreetModel.findOne({authorId: authorId, _id: freetId}).populate(['authorId', 'domId']);
   }
 
   /**
@@ -63,6 +71,17 @@ class FreetCollection {
   }
 
   /**
+   * Get all the freets in a given dom  - use domID to find all the freets
+   *
+   * @param {string} domId 
+   * @return {Promise<HydratedDocument<Freet>[]>} - An array of all of the freets
+   */
+  static async findAllByDomId(domId: Types.ObjectId): Promise<Array<HydratedDocument<Freet>>> {
+    const dom = await DomCollection.findOne(domId);
+    return FreetModel.find({domId: dom._id}).populate('domId');
+  }
+
+  /**
    * Update a freet with the new content
    *
    * @param {string} freetId - The id of the freet to be updated
@@ -86,6 +105,16 @@ class FreetCollection {
   static async deleteOne(freetId: Types.ObjectId | string): Promise<boolean> {
     const freet = await FreetModel.deleteOne({_id: freetId});
     return freet !== null;
+  }
+
+  
+  /**
+   * Delete all the freets in a give dom
+   *
+   * @param {string} domId - The id of dom of freets
+   */
+   static async deleteManybyDom(domId: Types.ObjectId | string): Promise<void> {
+    await FreetModel.deleteMany({domId});
   }
 
   /**
