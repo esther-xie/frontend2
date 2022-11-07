@@ -29,6 +29,12 @@ export default {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+.application{
+  font-family: "Roboto";
+}
+
 * {
   box-sizing: border-box;
 }
@@ -40,10 +46,14 @@ body {
   padding: 0;
   margin: 0;
   font-size: 1.2em;
+  font-family: "Roboto";
 }
 
 main {
-  padding: 0 5em 5em;
+  padding-top: 2em;
+  max-width: 500px;
+  margin: auto;
+  border:1em;
 }
 
 .alerts {
@@ -73,5 +83,29 @@ main {
 
 .alerts .success {
     background-color: rgb(45, 135, 87);
+}
+
+a:link {
+  color: black;
+  text-decoration: none;
+}
+
+a:visited {
+  color: black;
+  text-decoration: none;
+}
+
+a:hover {
+  color: rgb(255, 119, 119);
+}
+
+.followers{
+  font-size: 80%;
+  color: rgb(80, 80, 80);
+}
+
+.info{
+  font-size: 80%;
+  color: grey;
 }
 </style>

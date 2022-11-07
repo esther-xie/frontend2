@@ -6,13 +6,31 @@
   <nav>
     <div class="left">
       <img src="../../public/logo.svg">
-      <h1 class="title">
-        Fritter
-      </h1>
+      <router-link to="/">
+        <h1 class="title">
+          Fritter
+        </h1>
+      </router-link>
     </div>
-    <div class="right">
+    <div class="center">
       <router-link to="/">
         Home
+      </router-link>
+    </div>
+    <div class="right">
+      <span id="nav-create">
+        <router-link
+          v-if="$store.state.username"
+          to="/create"
+        >
+          Create
+        </router-link>
+      </span>
+      <router-link
+        v-if="$store.state.username"
+        to="/dom"
+      >
+        Doms
       </router-link>
       <router-link
         v-if="$store.state.username"
@@ -40,18 +58,36 @@
 </template>
 
 <style scoped>
+
 nav {
     padding: 1vw 2vw;
-    background-color: #ccc;
+    background-color:#4166bb;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
+    font-weight: 900;
+    filter: drop-shadow(0 0 1rem #4166bb)
+}
+
+a:link {
+  color: #f5f5dc;
+  text-decoration: none;
+}
+
+a:visited {
+  color: beige;
+  text-decoration: none;
+}
+
+a:hover {
+  color: rgb(255, 119, 119);
 }
 
 .title {
     font-size: 32px;
     margin: 0 5px;
+    color: rgb(148, 212, 255);
 }
 
 img {
@@ -63,6 +99,23 @@ img {
 	align-items: center;
 }
 
+.center{
+  margin: auto;
+}
+
+#nav-create{
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
+  align-items: center;
+  background-color: rgb(255, 119, 119);
+  border-radius: 5em;
+}
+
+#nav-create :hover{
+  color:#4166bb;
+}
 .right {
     font-size: 20px;
     display: grid;

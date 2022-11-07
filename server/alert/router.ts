@@ -54,7 +54,6 @@ router.get(
  *
  * @name POST /api/alerts/:freetId
  *
- * @param {number} value - The content of the alert
  * @return {AlertResponse} - The created alert
  * @throws {403} - If the user is not logged in
  * @throws {400} - If the freet content is empty or a stream of empty spaces

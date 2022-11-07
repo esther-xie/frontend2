@@ -11,6 +11,10 @@ const store = new Vuex.Store({
   state: {
     filter: null, // Username to filter shown freets by (null = show all)
     freets: [], // All freets created in the app
+    doms: [],
+    alldoms: [],
+    follows: [],
+    allrisks: [],
     username: null, // Username of the logged in user
     alerts: {} // global success/error messages encountered during submissions to non-visible forms
   },
@@ -45,6 +49,13 @@ const store = new Vuex.Store({
        */
       state.freets = freets;
     },
+    updateDoms(state, doms) {
+      /**
+       * Update the stored freets to the provided freets.
+       * @param doms - Freets to store
+       */
+      state.doms = doms;
+    },
     async refreshFreets(state) {
       /**
        * Request the server for the currently available freets.
@@ -52,7 +63,39 @@ const store = new Vuex.Store({
       const url = state.filter ? `/api/users/${state.filter}/freets` : '/api/freets';
       const res = await fetch(url).then(async r => r.json());
       state.freets = res;
-    }
+    },
+    async refreshMyDoms(state) {
+      /**
+       * Request the server for the currently available doms.
+       */
+      const url = state.username ? `/api/doms?author=${state.username}` : '/api/doms';
+      const res = await fetch(url).then(async r => r.json());
+      state.doms = res;
+    },
+    async refreshAllDoms(state) {
+      /**
+       * Request the server for the currently available doms.
+       */
+      const url = '/api/doms';
+      const res = await fetch(url).then(async r => r.json());
+      state.alldoms = res;
+    },
+    async refreshFollows(state) {
+      /**
+       * Request the server for the currently available doms.
+       */
+      const url = '/api/follows';
+      const res = await fetch(url).then(async r => r.json());
+      state.follows = res;
+    },
+    async refreshFreetRisk(state) {
+      /**
+       * Request the server for the currently available doms.
+       */
+      const url = '/api/alerts';
+      const res = await fetch(url).then(async r => r.json());
+      state.allrisks = res;
+    },
   },
   // Store data across page refreshes, only discard on browser close
   plugins: [createPersistedState()]

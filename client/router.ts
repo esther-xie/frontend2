@@ -3,6 +3,9 @@ import VueRouter from 'vue-router';
 import FreetsPage from './components/Freet/FreetsPage.vue';
 import AccountPage from './components/Account/AccountPage.vue';
 import LoginPage from './components/Login/LoginPage.vue';
+import DomPage from './components/Dom/DomPage.vue';
+import CreateFreetPage from './components/Freet/CreateFreetPage.vue';
+import DomProfilePage from './components/Dom/DomProfilePage.vue';
 import NotFound from './NotFound.vue';
 
 Vue.use(VueRouter);
@@ -11,7 +14,10 @@ const routes = [
   {path: '/', name: 'Home', component: FreetsPage},
   {path: '/account', name: 'Account', component: AccountPage},
   {path: '/login', name: 'Login', component: LoginPage},
-  {path: '*', name: 'Not Found', component: NotFound}
+  {path: '/dom', name: 'Doms', component: DomPage},
+  {path: '/dom/profile/:author/:domname?', name: 'Dom Profile', component: DomProfilePage},
+  {path: '*', name: 'Not Found', component: NotFound},
+  {path: '/create', name: 'Create', component: CreateFreetPage}
 ];
 
 const router = new VueRouter({routes});

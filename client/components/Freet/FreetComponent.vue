@@ -7,8 +7,15 @@
   >
     <header>
       <h3 class="author">
-        @{{ freet.author }}
+        <router-link :to="`/dom/profile/${freet.author}/${freet.domId.domname}`">
+           @{{ freet.displayedname }}
+        </router-link>
       </h3>
+      <div
+      v-if="!editing"
+      class="followers">
+        {{ numFollowers() }} followers
+      </div> 
       <div
         v-if="$store.state.username === freet.author"
         class="actions"
@@ -52,6 +59,14 @@
       Posted at {{ freet.dateModified }}
       <i v-if="freet.edited">(edited)</i>
     </p>
+
+    <!-- <section
+      class="risks">
+      <RiskComponent
+        :freet="freet"
+      />
+    </section> -->
+
     <section class="alerts">
       <article
         v-for="(status, alert, index) in alerts"
@@ -65,8 +80,11 @@
 </template>
 
 <script>
+import RiskComponent from '@/components/Freet/RiskComponent.vue';
+
 export default {
   name: 'FreetComponent',
+  components: {RiskComponent},
   props: {
     // Data from the stored freet
     freet: {
@@ -82,6 +100,13 @@ export default {
     };
   },
   methods: {
+    numFollowers() {
+        /**
+         * Return number of followers for a particular dom
+         */
+        const allFollows = this.$store.state.follows;
+        return allFollows.filter(follow => follow.dom._id === this.dom._id).length;
+      },
     startEditing() {
       /**
        * Enables edit mode on this freet.
@@ -168,8 +193,11 @@ export default {
 
 <style scoped>
 .freet {
-    border: 1px solid #111;
     padding: 20px;
+    margin-bottom: 20px;
     position: relative;
+    box-shadow: 0 0 0.5em rgb(255, 211, 211);
+    border-radius: 0.5em;
 }
+
 </style>

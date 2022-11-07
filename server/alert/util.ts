@@ -7,8 +7,8 @@ type AlertResponse = {
   _id: string;
   author: string;
   freet: string;
+  value: string;
   dateCreated: string;
-  value: number;
   dateModified: string;
 };
 

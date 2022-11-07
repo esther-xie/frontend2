@@ -12,8 +12,8 @@ export type Alert = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
   authorId: Types.ObjectId;
   freetId: Types.ObjectId;
+  value: 'fight' | 'peace';
   dateCreated: Date;
-  value: number;
   dateModified: Date;
 };
 
@@ -21,8 +21,8 @@ export type PopulatedAlert = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
   authorId: User;
   freetId: Types.ObjectId;
+  value: 'fight' | 'peace';
   dateCreated: Date;
-  value: number;
   dateModified: Date;
 };
 
@@ -43,14 +43,14 @@ const AlertSchema = new Schema<Alert>({
     required: true,
     ref: 'Freet'
   },
+  value:{
+    type: String,
+    required: true,
+    enum: ['fight', 'peace']
+  },
   // The date the freet was created
   dateCreated: {
     type: Date,
-    required: true
-  },
-  // The value of the alert
-  value: {
-    type: Number,
     required: true
   },
   // The date the freet was modified

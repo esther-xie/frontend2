@@ -20,7 +20,7 @@ const router = express.Router();
 /**
  * Get doms by author.
  *
- * @name GET /api/doms?authorId=id
+ * @name GET /api/doms?author=username
  *
  * @return {DomResponse[]} - An array of freets created by user with id, authorId
  * @throws {400} - If authorId is not given
@@ -87,7 +87,7 @@ router.post(
 /**
  * Update a dom profile.
  *
- * @name PUT /api/doms
+ * @name PATCH /api/doms
  *
  * @param {string} domname - dom's name
  * @param {string} displayedname - dom's displayed name
@@ -98,7 +98,7 @@ router.post(
  * @throws {413} - If the description is more than 140 characters long
  * 
  */
-router.put(
+router.patch(
   '/:domId?',
   [
     userValidator.isUserLoggedIn,

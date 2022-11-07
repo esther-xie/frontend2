@@ -18,16 +18,15 @@ class AlertCollection {
    *
    * @param {string} authorId - The id of the author of the alert
    * @param {string} freetId - The id of the freet
-   * @param {string} value - The id of the alert
    * @return {Promise<HydratedDocument<Alert>>} - The newly created freet
    */
-  static async addOne(authorId: Types.ObjectId | string, freetId: Types.ObjectId | string, value: number ): Promise<HydratedDocument<Alert>> {
+  static async addOne(authorId: Types.ObjectId | string, freetId: Types.ObjectId | string, value: 'fight' | 'peace'): Promise<HydratedDocument<Alert>> {
     const date = new Date();
     const alert = new AlertModel({
       authorId,
       freetId,
-      dateCreated: date,
       value,
+      dateCreated: date,
       dateModified: date
     });
     await alert.save(); // Saves alert to MongoDB
@@ -65,17 +64,7 @@ class AlertCollection {
     return AlertModel.find({}).sort({dateModified: -1}).populate('authorId');
   }
 
-  // /**
-  //  * Get all the alerts in by given author
-  //  *
-  //  * @param {string} username - The username of author of the alerts
-  //  * @return {Promise<HydratedDocument<Alert>[]>} - An array of all of the alerts
-  //  */
-  // static async findAllByUsername(username: string): Promise<Array<HydratedDocument<Alert>>> {
-  //   const author = await UserCollection.findOneByUsername(username);
-  //   return AlertModel.find({authorId: author._id}).populate('authorId');
-  // }
-
+  
   /**
    * Get all the alerts associated with the given freet
    *
@@ -110,6 +99,16 @@ class AlertCollection {
   static async deleteOne(freetId: string, username: string): Promise<boolean> {
     const alert = await AlertModel.deleteOne({freetId, username});
     return alert !== null;
+  }
+
+  static async getFightNums(freetId: string): Promise<Array<HydratedDocument<Alert>>> {
+    return AlertModel.find({freetId, value: 'fight'}).populate('freetId');
+  }
+
+  static async getAlertTotal(freetId: string): Promise<[number, number]> {
+    const fightnums = await AlertModel.find({freetId, value: 'fight'});
+    const peacenums = await AlertModel.find({freetId, value: 'peace'});
+    return [fightnums.length, peacenums.length];
   }
 }
 

@@ -117,13 +117,30 @@ export default {
 
 <style scoped>
 form {
-  border: 1px solid #111;
+  background-color: #f0f4fb;
+  box-shadow: 0 0 0.5em rgb(197, 192, 255);
+  border-radius: 0.5em;
   padding: 0.5rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   margin-bottom: 14px;
   position: relative;
+}
+
+button{
+  background-color: #4166bb;
+  padding: 0.3em;
+  border-radius: 0.5em;
+  font-family: Roboto;
+  color: white;
+  font-size:100%;
+  width: fit-content;
+  align-self: flex-end;
+}
+
+button:hover{
+  background-color: rgb(255, 119, 119);
 }
 
 article > div {

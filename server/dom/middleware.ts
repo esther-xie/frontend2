@@ -6,8 +6,8 @@ import DomCollection from '../dom/collection';
  * Checks if a dom with domId is req.params exists
  */
  const isDomExists = async (req: Request, res: Response, next: NextFunction) => {
-  const validFormat = Types.ObjectId.isValid(req.params.domId);
-  const dom = validFormat ? await DomCollection.findOne(req.params.domId) : '';
+  const validFormat = Types.ObjectId.isValid(req.params.domId || req.body.domId);
+  const dom = validFormat ? await DomCollection.findOne(req.params.domId || req.body.domId) : '';
   if (!dom) {
     res.status(404).json({
       error: {
@@ -24,7 +24,7 @@ import DomCollection from '../dom/collection';
  * Checks if a dom name in req.body is already used by the user
  */
 const isDomnameNotAlreadyInUse = async (req: Request, res: Response, next: NextFunction) => {
-  const dom = await DomCollection.findOneByDomnameandUser(req.body.username, req.params.domname);
+  const dom = await DomCollection.findOneByDomnameandUser(req.session.userId, req.params.domname);
 
   // If the current session user wants to change the dom name to one which matches
   // the current one irrespective of the case, we should allow them to do so
@@ -55,7 +55,7 @@ const isValidDomname = (req: Request, res: Response, next: NextFunction) => {
 
   if (domname.length > 50) {
     res.status(413).json({
-      error: 'Freet content must be no more than 50 characters.'
+      error: 'Dom name must be no more than 50 characters.'
     });
     return;
   }
@@ -99,7 +99,7 @@ const isValidDomname = (req: Request, res: Response, next: NextFunction) => {
 const isYourDom = async (req: Request, res: Response, next: NextFunction) => {
   const dom = await DomCollection.findOne(req.params.domId);
   const authorId = dom.authorId._id;
-  if (req.session.authorId !== authorId.toString()) {
+  if (req.session.userId !== authorId.toString()) {
     res.status(403).json({
       error: 'Cannot modify other users\' doms.'
     });
@@ -113,9 +113,9 @@ const isYourDom = async (req: Request, res: Response, next: NextFunction) => {
  * Checks if the current user is the owner of the dom whose domId is in req.params
  */
  const isNotYourDom = async (req: Request, res: Response, next: NextFunction) => {
-  const dom = await DomCollection.findOne(req.params.domId);
+  const dom = await DomCollection.findOne(req.params.domId || req.body.domId);
   const authorId = dom.authorId._id;
-  if (req.session.authorId == authorId.toString()) {
+  if (req.session.authorId === authorId.toString()) {
     res.status(403).json({
       error: 'Cannot follow your own doms.'
     });

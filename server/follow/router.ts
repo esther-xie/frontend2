@@ -101,7 +101,6 @@ router.get(
  * @name POST /api/follows
  *
  * @param {string} domId - The id of the dom
- * @param {string} content - The content of the freet
  * @return {FollowResponse} - The created freet
  * @throws {403} - If the user is not logged in
  * @throws {404} - If the following dom is not valid
@@ -109,7 +108,7 @@ router.get(
  * @throws {409} - If the user has already followed the dom
  */
 router.post(
-  '/:domId?',
+  '/',
   [
     userValidator.isUserLoggedIn,
     domValidator.isDomExists,
@@ -117,8 +116,7 @@ router.post(
     domValidator.isNotYourDom
   ],
   async (req: Request, res: Response) => {
-    const followingdomId = req.params.domId as string;
-    const domname = (await DomCollection.findOne(followingdomId)).domname;
+    const followingdomId = req.body.domId as string;
     const followerId = req.session.userId as string;
     const follow = await FollowCollection.addOne(followerId, followingdomId);
     const response = util.constructFollowResponse(follow);

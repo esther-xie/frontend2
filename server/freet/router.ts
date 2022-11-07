@@ -36,6 +36,7 @@ router.get(
     }
 
     const allFreets = await FreetCollection.findAll();
+    console.log(allFreets);
     const response = allFreets.map(util.constructFreetResponse);
     res.status(200).json(response);
   },
@@ -63,7 +64,7 @@ router.get(
   '/',
   async (req: Request, res: Response, next: NextFunction) => {
     // Check if domId query parameter was supplied
-    if (req.query.dom !== undefined) {
+    if (req.body.dom !== undefined) {
       next();
       return;
     }
