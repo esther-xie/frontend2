@@ -6,7 +6,19 @@
       <header>
         <h2>Welcome @{{ $store.state.username }}</h2>
       </header>
-      <CreateFreetForm />
+      <div
+        v-if="$store.state.doms.length"
+      >
+        <CreateFreetForm />
+      </div>
+      <div
+        v-else>
+        <h3> 
+          <router-link to="/dom">
+            Create a dom 
+          </router-link>
+          to start freeting! </h3>
+      </div>
     </section>
   </main>
 </template>

@@ -21,7 +21,8 @@ export default {
       const user = res.user;
       this.$store.commit('setUsername', user ? user.username : null);
     });
-
+    this.$store.commit('refreshAllDoms');
+    this.$store.commit('refreshAllFollowingDom');
     // Clear alerts on page refresh
     this.$store.state.alerts = {};
   }

@@ -14,7 +14,7 @@
       <div
       v-if="!editing"
       class="followers">
-        {{ numFollowers() }} followers
+        <!-- {{ numFollowers() }} followers -->
       </div> 
       <div
         v-if="$store.state.username === freet.author"
@@ -60,12 +60,12 @@
       <i v-if="freet.edited">(edited)</i>
     </p>
 
-    <!-- <section
+    <section
       class="risks">
       <RiskComponent
         :freet="freet"
       />
-    </section> -->
+    </section>
 
     <section class="alerts">
       <article

@@ -35,8 +35,8 @@ const constructFollowResponse = (follow: HydratedDocument<Follow>): FollowRespon
   
   return {
     _id: followCopy._id.toString(),
-    follower: followCopy.follower.toString(),
-    followingdom: followCopy.followingdom.toString(),
+    follower: followCopy.followerId.toString(),
+    followingdom: followCopy.followingdomId.toString(),
     dateCreated: formatDate(follow.dateCreated),
   };
 };

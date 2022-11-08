@@ -46,7 +46,7 @@
         v-else
         class="displayedname"
       >
-        <router-link :to="`/dom/profile/${dom.domname}`">
+        <router-link :to="`/dom/profile/${dom.author}/${dom.domname}`">
           @{{ dom.displayedname }}
         </router-link>
       </h3>
@@ -66,7 +66,7 @@
         v-else
         class="domname"
       >
-        <router-link :to="`/dom/profile/${dom.domname}`">
+        <router-link :to="`/dom/profile/${dom.author}/${dom.domname}`">
           (dom) {{ dom.domname }}
         </router-link>
       </p>
@@ -98,7 +98,7 @@
       <div
         v-if="!editing"
         class="followers">
-        {{ numFollowers() }} followers
+        {{ this.followers.length }} followers
       </div> 
 
       <p class="info">
@@ -136,17 +136,25 @@ export default {
       draftdname: this.dom.displayedname, // Potentially-new content for this freet
       draftname: this.dom.domname, // The content of our current "draft" while being edited
       draftdescription: this.dom.description, // The content of our current "draft" while being edited
+      followers:'',
       alerts: {} // Displays success/error messages encountered during freet modification
     };
   },
   methods: {
-    numFollowers() {
-        /**
-         * Return number of followers for a particular dom
+    async getFollowers() {
+         /**
+         * Get the followers for a user
          */
-        const allFollows = this.$store.state.follows;
-        return allFollows.filter(follow => follow.dom._id === this.dom._id).length;
-      },
+        const url = `/api/follows/follower/${this.dom._id}`;
+        try {
+          const r = await fetch(url);
+          const res = await r.json();
+          this.followers = res['response'] ? res['response'] : res['message']; //['data']; 
+        } catch (e) {
+          this.$set(this.alerts, e, 'error');
+          setTimeout(() => this.$delete(this.alerts, e), 3000);
+        }
+      }, 
     startEditing() {
       /**
        * Enables edit mode on this freet.

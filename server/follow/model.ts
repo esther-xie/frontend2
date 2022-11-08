@@ -11,15 +11,15 @@ import type {Dom} from '../dom/model';
 // Type definition for Freet on the backend
 export type Follow = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
-  follower: Types.ObjectId;
-  followingdom: Types.ObjectId;
+  followerId: Types.ObjectId;
+  followingdomId: Types.ObjectId;
   dateCreated: Date;
 };
 
 export type PopulatedFollow = {
   _id: Types.ObjectId; // MongoDB assigns each object this ID on creation
-  follower: User;
-  followingdom: Dom;
+  followerId: User;
+  followingdomId: Dom;
   dateCreated: Date;
 };
 
@@ -28,14 +28,14 @@ export type PopulatedFollow = {
 // type given by the type property, inside MongoDB
 const FollowSchema = new Schema<Follow>({
   // The author userId
-  follower: {
+  followerId: {
     // Use Types.ObjectId outside of the schema
     type: Schema.Types.ObjectId,
     required: true,
     ref: 'Uer'
   },
   // The domId
-  followingdom: {
+  followingdomId: {
     // Use Types.ObjectId outside of the schema
     type: Schema.Types.ObjectId,
     required: true,

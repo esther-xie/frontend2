@@ -14,7 +14,8 @@ const store = new Vuex.Store({
     doms: [],
     alldoms: [],
     follows: [],
-    allrisks: [],
+    riskscore: null, // the value related to each freet (fight - peace)
+    allrisks: [], //All the alerts (risks) posted
     username: null, // Username of the logged in user
     alerts: {} // global success/error messages encountered during submissions to non-visible forms
   },
@@ -80,22 +81,27 @@ const store = new Vuex.Store({
       const res = await fetch(url).then(async r => r.json());
       state.alldoms = res;
     },
-    async refreshFollows(state) {
+    async refreshAllFollowingDom(state) {
       /**
-       * Request the server for the currently available doms.
+       * Request the server for all the doms the user is currently following.
        */
-      const url = '/api/follows';
+      const url = '/api/follows/following';
       const res = await fetch(url).then(async r => r.json());
       state.follows = res;
     },
     async refreshFreetRisk(state) {
       /**
-       * Request the server for the currently available doms.
+       * Request the server for all the alerts (risks) posted.
        */
       const url = '/api/alerts';
       const res = await fetch(url).then(async r => r.json());
       state.allrisks = res;
     },
+    async refreshRiskScore(state){
+      const url = state.freets ? `/api/alerts/num?freet=${state.freets}` : '/api/alerts';
+      const res = await fetch(url).then(async r => r.json());
+      state.riskscore = res;
+    }
   },
   // Store data across page refreshes, only discard on browser close
   plugins: [createPersistedState()]

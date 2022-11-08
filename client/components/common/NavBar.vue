@@ -18,8 +18,9 @@
       </router-link>
     </div>
     <div class="right">
-      <span id="nav-create">
+      <span class="nav-create">
         <router-link
+          id="create"
           v-if="$store.state.username"
           to="/create"
         >
@@ -87,7 +88,7 @@ a:hover {
 .title {
     font-size: 32px;
     margin: 0 5px;
-    color: rgb(148, 212, 255);
+    color: #94d4ff;
 }
 
 img {
@@ -103,18 +104,17 @@ img {
   margin: auto;
 }
 
-#nav-create{
-  padding-left: 1em;
-  padding-right: 1em;
-  padding-top: 0.25em;
-  padding-bottom: 0.25em;
+.nav-create{
   align-items: center;
   background-color: rgb(255, 119, 119);
   border-radius: 5em;
 }
+.nav-create:hover{
+  background-color:white;
+}
 
-#nav-create :hover{
-  color:#4166bb;
+#create{
+  margin: 0.5em;
 }
 .right {
     font-size: 20px;

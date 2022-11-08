@@ -2,6 +2,7 @@
 
 <template>
   <main>
+    <h3> Dom page for {{dom.domname}}</h3>
     <section>
         <DomComponent
           :dom=dom
@@ -9,9 +10,7 @@
     </section>
     <section>
       <FreetComponent
-          v-for="freet in $store.state.freets"
-          :key="freet.id"
-          :freet="freet"
+          :freet=freet
         />
     </section>
   </main>
@@ -33,10 +32,17 @@ export default {
   },
   computed:{
     dom(){
-      const domname = this.$route.params.domname;
-      const author = this.$route.params.author;
       const alldoms = this.$store.state.alldoms;
-      return alldoms.find(dom => dom.domname === domname && dom.author === author);
+      const dom = alldoms
+                .filter(dom => dom.domname === this.$route.params.domname)
+                .filter(filtered => filtered.author === this.$route.params.author)[0];
+      return dom;
+    },
+    freet(){
+      const allfreets = this.$store.state.freets;
+      const freet = allfreets
+                .filter(freet => freet.domId.domname === this.$route.params.domname)[0];
+      return freet;
     }
   },
 };

@@ -3,7 +3,7 @@ Form for creating freets (block style)
   <form @submit.prevent="submit">
     <h3>{{ title }}</h3>
 
-    <div class="dom-container">
+    <div class="dom-container"></div>
       <label> Dom: </label>
       <div class="posting-dom"          
       v-for="dom in $store.state.doms">
@@ -19,7 +19,7 @@ Form for creating freets (block style)
             @input="selectedDomId = dom._id"
           />
       </div>
-    </div>
+    
 
     <article
       v-if="fields.length"
@@ -77,7 +77,8 @@ export default {
         const message = 'Successfully created a freet!';
         this.$set(this.alerts, message, 'success');
         setTimeout(() => this.$delete(this.alerts, message), 3000);
-      }
+      },
+      alerts: {}, // Displays success/error messages encountered during form submission
     };
   },
   methods: {
@@ -180,5 +181,6 @@ textarea {
   padding-right: 0.75em;
   background-color:#a5bbed;
   border-radius: 2em;
+  width: fit-content;
 }
 </style>

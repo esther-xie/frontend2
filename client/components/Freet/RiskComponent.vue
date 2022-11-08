@@ -16,22 +16,24 @@ If signed in
       class="risk"
     >
       <p
-        v-if="$store.state.numrisks > 3">
+        v-if="$store.state.riskscore > 3">
         Might be unfriendly contents.
       </p>
 
       <!-- if the user has not added fight -->
       <button 
-        v-if="$store.state.addfight" 
-        @click="addFight"
-        id="fight0">
+        v-if="!existingRisk()"
+        class="riskbutton"
+        @click="addRisk"
+        :value="fight">
         <img class="fight-icon"
           src="../../public/fight0.svg"/>
       </button>
       <!-- else -->
       <button 
         v-else
-        @click="removeFight"
+        @click="removeRisk"
+        class="riskbutton"
       >
         <img class="fight-icon"
           src="../../public/fight1.svg"/> 
@@ -40,17 +42,22 @@ If signed in
       <!-- only for high risks posts -->
       <!-- if has not added peace -->
       <button 
-        v-if="$store.state.numrisks > 3">
-        @click="addPeace"
-      >
-        ♡ 
+        v-if="$store.state.numrisks > 3
+        && !existingRisk()" 
+        class="riskbutton"
+        @click="addRisk"
+        :value="peace">
+        <img class="fight-icon"
+          src="../../public/peace0.svg"/> 
       </button>
       <!-- else -->
-      <!-- <button 
-        @click="removePeace"
-      >
-        ♥ 
-      </button> -->
+      <button 
+        v-else
+        @click="removeRisk"
+        class="riskbutton">
+        <img class="fight-icon"
+          src="../../public/peace1.svg"/> 
+      </button>
       <section class="alerts">
         <article
           v-for="(status, alert, index) in alerts"
@@ -76,26 +83,29 @@ export default {
   },
   data() {
     return {
-      alerts: {} // Displays success/error messages encountered during freet modification
+      risks:'',
+      alerts: {}, // Displays success/error messages encountered during freet modification
     };
   },
-  computed: {
-    Risks() {
-      this.toggle;
-      console.log("hi", this.$store.state.risks[this.model][this.id]);
-      return this.$store.state.risks[this.model][this.id];
-    },
-    numRisks: function() {
-      return this.item.numFights - this.item.numPeace;
-    }
-  },
   methods: {
-   addFight() {
+    existingRisk() {
       /**
-       * Creates a user like for a freet (freet must be authored by another user)
+       * Check if the user has posted alerts to this freet
+       */
+      const allRisk = this.$store.state.allrisks;
+      const exist = allRisk
+                      .filter(allrisk => risk.author === this.$store.state.username)
+                      .filter(filtered => filtered.freetId === this.freet._id)
+                      .length === 1;
+      return exist;
+    },
+    addRisk() {
+      /**
+       * Creates a fight alert/ peace alert for a freet
        */
       const params = {
         method: 'POST',
+        body: {value},
         message: 'Successfully alerted freet!',
         callback: () => {
           this.$set(this.alerts, params.message, 'success');
@@ -106,7 +116,7 @@ export default {
     },
     removeRisk() {
       /**
-       * Removes a user like (Unlike) for a freet (freet must be authored by another user)
+       * Removes a fight alert/ peace for a freet
        */
       const params = {
         method: 'DELETE',
@@ -118,39 +128,43 @@ export default {
       };
       this.RiskRequest(params);
     },
-    addPeace() {
+
+    async RiskRequest(params) {
       /**
-       * Creates a user like for a freet (freet must be authored by another user)
+       * Submits a request to the like's endpoint
+       * @param params - Options for the request
+       * @param params.body - Body for the request, if it exists
+       * @param params.callback - Function to run if the the request succeeds
        */
-      const params = {
-        method: 'POST',
-        message: 'Successfully added peace to the freet!',
-        callback: () => {
-          this.$set(this.alerts, params.message, 'success');
-          setTimeout(() => this.$delete(this.alerts, params.message), 3000);
-        }
+      const options = {
+        method: params.method, headers: {'Content-Type': 'application/json'}
       };
-      this.RiskRequest(params);
-    },
-    removePeace() {
-      /**
-       * Removes a user like (Unlike) for a freet (freet must be authored by another user)
-       */
-      const params = {
-        method: 'DELETE',
-        message: 'Successfully removed the peace!',
-        callback: () => {
-          this.$set(this.alerts, params.message, 'success');
-          setTimeout(() => this.$delete(this.alerts, params.message), 3000);
+      if (params.body) {
+        options.body = params.body;
+      }
+      try {
+        const r = await fetch(`/api/alerts/${this.freet._id}`, options);
+        if (!r.ok) {
+          const res = await r.json();
+          throw new Error(res.error);
         }
-      };
-      this.RiskRequest(params);
-    },
+        this.$store.commit('refreshFreetRisk'); //refresh number of alerts
+        params.callback();
+      } catch (e) {
+        this.$set(this.alerts, e, 'error');
+        setTimeout(() => this.$delete(this.alerts, e), 3000);
+      }
+    }
   }
 };
 </script>
 
 <style scoped>
+
+.riskbutton{
+  border: none;
+  background-color: transparent;
+}
 .fight-icon {
   width: 1.3rem;
   height: 1.3rem;

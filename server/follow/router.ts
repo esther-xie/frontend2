@@ -79,7 +79,7 @@ router.get(
     const user = await UserCollection.findOneByUserId(req.session.userId);
     const followingdom = await FollowCollection.findAllFollowingDoms(user._id);
     const response = (await Promise.all(followingdom.map(async (follow) => {
-        const dom = await DomCollection.findOne(follow.followingdom);
+        const dom = await DomCollection.findOne(follow.followingdomId);
         return await FreetCollection.findAllByDomId(dom._id);
         })))
             .flat()
@@ -108,7 +108,7 @@ router.get(
  * @throws {409} - If the user has already followed the dom
  */
 router.post(
-  '/',
+  '/:domId?',
   [
     userValidator.isUserLoggedIn,
     domValidator.isDomExists,
@@ -116,9 +116,7 @@ router.post(
     domValidator.isNotYourDom
   ],
   async (req: Request, res: Response) => {
-    const followingdomId = req.body.domId as string;
-    const followerId = req.session.userId as string;
-    const follow = await FollowCollection.addOne(followerId, followingdomId);
+    const follow = await FollowCollection.addOne(req.session.userId, req.params.domId);
     const response = util.constructFollowResponse(follow);
 
     res.status(201).json({

@@ -34,10 +34,6 @@ router.get(
       next();
       return;
     }
-
-    const allAlerts = await AlertCollection.findAll();
-    const response = allAlerts.map(util.constructAlertResponse);
-    res.status(200).json(response);
   },
   [
     freetValidator.isFreetExists
@@ -46,6 +42,33 @@ router.get(
     const freetAlerts = await AlertCollection.findAllByFreetId(req.query.author as string);
     const response = freetAlerts.map(util.constructAlertResponse);
     res.status(200).json(response);
+  }
+);
+
+/**
+ * Get alert values by freet ID.
+ *
+ * @name GET /api/alerts/num?freetId=freetid
+ *
+ * @return {AlertResponse[]} - An array of alerts created by user with id, authorId
+ * @throws {400} - If authorId is not given
+ * @throws {404} - If no user has given authorId
+ *
+ */
+ router.get(
+  '/num?freetId=freetid',
+  async (req: Request, res: Response, next: NextFunction) => {
+    if (req.params.freetId !== undefined) {
+      next();
+      return;
+    }
+  },
+  [
+    freetValidator.isFreetExists
+  ],
+  async (req: Request, res: Response) => {
+    const numAlerts = await AlertCollection.getAlertTotal(req.params.freetId as string);
+    res.status(200).json(numAlerts);
   }
 );
 
@@ -68,6 +91,7 @@ router.post(
   ],
   async (req: Request, res: Response) => {
     const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
+    console.log(req.body);
     const alert = await AlertCollection.addOne(userId, req.params.freetId, req.body.value);
     res.status(201).json({
       message: 'Your alert was created successfully.',

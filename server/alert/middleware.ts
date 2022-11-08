@@ -7,8 +7,8 @@ import FreetCollection from '../freet/collection';
  * Checks if a alert with alertId is req.params exists
  */
 const isAlertExists = async (req: Request, res: Response, next: NextFunction) => {
-  const validFormat = Types.ObjectId.isValid(req.params.alertId);
-  const alert = validFormat ? await AlertCollection.findOne(req.params.alertId) : '';
+  // const validFormat = Types.ObjectId.isValid(req.params.alertId);
+  const alert = true ? await AlertCollection.findOne(req.params.alertId) : '';
   if (!alert) {
     res.status(404).json({
       error: {

@@ -2,15 +2,17 @@
     <article>
     <section class="followbutton">
       <button 
+        v-if="$store.state.username !== null"
         @click="addFollow"
       >
-        ♡ 
+        follow
       </button>
       <button 
-        v-if="existingfollow && $store.state.username !== null"
+      v-if="$store.state.username !== null
+        "
         @click="removeFollow"
       >
-        ♥ 
+        unfollow
       </button>
     </section>
 
@@ -42,39 +44,63 @@
         alerts: {} // Displays success/error messages encountered during freet modification
       };
     },
+
     methods: {
-        existingfollow() {
-        /**
-         * Return if user has followed the dom
-         */
-        const allFollows = this.$store.state.follows;
-        const exists = allFollows
-                        .filter(follow => follow.user === this.$store.state.username)
-                        .filter(filtered =>  filtered.dom === this.freet.dom)
-                        .length;
-        return exists;
-        },
-      addFollow() {
-        const params = {
-          method: 'POST',
-          message: 'Successfully followed dom!',
-          callback: () => {
-            this.$set(this.alerts, params.message, 'success');
-            setTimeout(() => this.$delete(this.alerts, params.message), 3000);
-          }
+      existingfollow() {
+      /**
+       * Return if user has liked freet
+       */
+      const allfollows = this.$store.state.follows;
+      const exists = allfollows
+                       .filter(follow => follow.domId === this.dom._id)
+                       .length === 1;
+      return exists;
+    },
+      async addFollow() {
+        console.log(this.dom._id);
+        console.log(this.$store.state.username);
+        const requestOptions = {
+          method: 'POST'
         };
-        this.FollowRequest(params);
+          const url =`/api/follows/${this.dom._id}`;
+          try {
+          const r = await fetch(url, requestOptions);
+          const res = await r.json();
+          if (!r.ok) {
+            throw new Error(res.error);
+          }
+          const message = 'Successfully followed dom!';
+          this.$set(this.alerts, message, 'success');
+          setTimeout(() => this.$delete(this.alerts, message), 3000);
+          // this.$store.commit('alert', {
+          //     message: `Successfully followed ${this.user.username}!`, status: 'success'
+          //   });
+        } catch (e) {
+          this.$set(this.alerts, e, 'error');
+          setTimeout(() => this.$delete(this.alerts, e), 3000);
+        }
       },
-      removeFollow() {
-        const params = {
-          method: 'DELETE',
-          message: 'Successfully unfollowed dom!',
-          callback: () => {
-            this.$set(this.alerts, params.message, 'success');
-            setTimeout(() => this.$delete(this.alerts, params.message), 3000);
+      async removeFollow() {
+         /**
+         * Logged in user unfollows another user
+         */
+         const requestOptions = {
+              method: 'DELETE'
+          };
+        const url = `/api/follows/${this.dom._id}`;
+        try {
+          const r = await fetch(url, requestOptions);
+          const res = await r.json();
+          if (!r.ok) {
+            throw new Error(res.error);
           }
-        };
-        this.FollowRequest(params);
+          const message = `Successfully unfollowed dom!`;
+          this.$set(this.alerts, message, 'success');
+          setTimeout(() => this.$delete(this.alerts, message), 3000);
+        } catch (e) {
+          this.$set(this.alerts, e, 'error');
+          setTimeout(() => this.$delete(this.alerts, e), 3000);
+        }
       },
       async FollowRequest(params) {
         /**

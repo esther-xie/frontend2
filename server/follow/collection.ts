@@ -29,7 +29,7 @@ class FollowCollection {
       dateCreated: date,
     });
     await follow.save(); // Saves freet to MongoDB
-    return follow.populate(['follower', 'followingdom']);
+    return follow.populate(['followerId', 'followingdomId']);
   }
 
   /**

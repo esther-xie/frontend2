@@ -21,6 +21,7 @@ class AlertCollection {
    * @return {Promise<HydratedDocument<Alert>>} - The newly created freet
    */
   static async addOne(authorId: Types.ObjectId | string, freetId: Types.ObjectId | string, value: 'fight' | 'peace'): Promise<HydratedDocument<Alert>> {
+    console.log(value);
     const date = new Date();
     const alert = new AlertModel({
       authorId,
@@ -105,10 +106,11 @@ class AlertCollection {
     return AlertModel.find({freetId, value: 'fight'}).populate('freetId');
   }
 
-  static async getAlertTotal(freetId: string): Promise<[number, number]> {
-    const fightnums = await AlertModel.find({freetId, value: 'fight'});
-    const peacenums = await AlertModel.find({freetId, value: 'peace'});
-    return [fightnums.length, peacenums.length];
+  static async getAlertTotal(freetId: string): Promise<number> {
+    const fightnums = await (await AlertModel.find({freetId, value: 'fight'})).length;
+    const peacenums = await (await AlertModel.find({freetId, value: 'peace'})).length;
+    const num = fightnums - peacenums;
+    return num;
   }
 }
 

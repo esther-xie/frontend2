@@ -6,7 +6,21 @@
       <header>
         <h2>Welcome @{{ $store.state.username }}</h2>
       </header>
-      <CreateFreetForm />
+      <div
+        v-if="$store.state.doms.length"
+      >
+        <CreateFreetForm />
+      </div>
+      <div
+        v-else>
+        <h3> 
+          <router-link to="/dom"
+          class = "redlink">
+            Create a dom 
+          </router-link>
+          to start freeting! </h3>
+      </div>
+
     </section>
     <section v-else>
       <header>
@@ -14,7 +28,8 @@
       </header>
       <article>
         <h3>
-          <router-link to="/login">
+          <router-link to="/login"
+          class = "redlink">
             Sign in
           </router-link>
           to create, edit, and delete freets.
@@ -92,5 +107,11 @@ section .scrollbox {
   flex: 1 0 50vh;
   padding: 3%;
   overflow-y: scroll;
+}
+.redlink {
+  color:#4166bb;
+}
+.redlink:hover {
+  color:rgb(255, 119, 119);
 }
 </style>
