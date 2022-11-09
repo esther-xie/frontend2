@@ -27,7 +27,7 @@ const router = express.Router();
  *
  */
 router.get(
-  '/',
+  '/:freetId?',
   async (req: Request, res: Response, next: NextFunction) => {
     // Check if authorId query parameter was supplied
     if (req.query.freet !== undefined) {
@@ -44,7 +44,27 @@ router.get(
     res.status(200).json(response);
   }
 );
-
+// * Get alerts by user.
+// *
+// * @name GET /api/alerts?userId=userId
+// *
+// * @return {AlertResponse[]} - An array of alerts created by user with id, authorId
+// * @throws {400} - If authorId is not given
+// * @throws {404} - If no user has given authorId
+// *
+// */
+router.get(
+ '/posted',
+ [
+   userValidator.isUserLoggedIn,
+ ],
+ async (req: Request, res: Response) => {
+   const postedAlerts = await AlertCollection.findAllByUserId(req.session.userId as string);
+   console.log(postedAlerts);
+   const response = postedAlerts.map(util.constructAlertResponse);
+   res.status(200).json(response);
+ }
+);
 /**
  * Get alert values by freet ID.
  *
@@ -119,8 +139,7 @@ router.delete(
     alertValidator.isFreetAlertedbyUser
   ],
   async (req: Request, res: Response) => {
-    const userId = (req.session.userId as string) ?? ''; // Will not be an empty string since its validated in isUserLoggedIn
-    await AlertCollection.deleteOne(userId, req.params.freetId);
+    await AlertCollection.deleteOne(req.session.userId, req.params.freetId);
     res.status(200).json({
       message: 'Your alert was deleted successfully.'
     });
