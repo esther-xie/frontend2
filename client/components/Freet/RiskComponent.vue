@@ -22,10 +22,9 @@ If signed in
 
       <!-- if the user has not added fight -->
       <button 
-        v-if="!existingRisk()"
+        v-if="this.risks==0"
         class="riskbutton"
-        @click="addRisk"
-        :value="fight">
+        @click="() => addRisk('fight')">
         <img class="fight-icon"
           src="../../public/fight0.svg"/>
       </button>
@@ -43,16 +42,17 @@ If signed in
       <!-- if has not added peace -->
       <button 
         v-if="$store.state.numrisks > 3
-        && !existingRisk()" 
+        && this.risks==0" 
         class="riskbutton"
-        @click="addRisk"
-        :value="peace">
+        @click="() => addRisk('peace')"
+        >
         <img class="fight-icon"
           src="../../public/peace0.svg"/> 
       </button>
       <!-- else -->
       <button 
-        v-else
+      v-if="$store.state.numrisks > 3
+        && this.risks==1" 
         @click="removeRisk"
         class="riskbutton">
         <img class="fight-icon"
@@ -84,28 +84,40 @@ export default {
   data() {
     return {
       risks:'',
+      value: 'fight',
       alerts: {}, // Displays success/error messages encountered during freet modification
     };
   },
+  // computed:{
+  //   exists(){
+  //       return this.risks.filter(alert => alert.author === this.$store.state.username).length;
+  //     }
+  //   },
+  created(){
+    this.getRisks();
+  },
   methods: {
-    existingRisk() {
-      /**
-       * Check if the user has posted alerts to this freet
-       */
-      const allRisk = this.$store.state.allrisks;
-      const exist = allRisk
-                      .filter(allrisk => risk.author === this.$store.state.username)
-                      .filter(filtered => filtered.freetId === this.freet._id)
-                      .length === 1;
-      return exist;
-    },
-    addRisk() {
+    async getRisks() {
+         /**
+         * Get the followers for a user
+         */
+        const url = `/api/alerts/${this._id}`;
+        try {
+          const r = await fetch(url);
+          const res = await r.json();
+          this.risks = res['response'] ? res['response'] : res['message']; //['data']; 
+        } catch (e) {
+          this.$set(this.alerts, e, 'error');
+          setTimeout(() => this.$delete(this.alerts, e), 3000);
+        }
+      }, 
+    addRisk(typeofrisk) {
       /**
        * Creates a fight alert/ peace alert for a freet
        */
       const params = {
         method: 'POST',
-        body: {value},
+        body: JSON.stringify({value: typeofrisk}),
         message: 'Successfully alerted freet!',
         callback: () => {
           this.$set(this.alerts, params.message, 'success');
@@ -148,7 +160,7 @@ export default {
           const res = await r.json();
           throw new Error(res.error);
         }
-        this.$store.commit('refreshFreetRisk'); //refresh number of alerts
+        this.$store.commit('refreshAllRisk'); //refresh number of alerts
         params.callback();
       } catch (e) {
         this.$set(this.alerts, e, 'error');

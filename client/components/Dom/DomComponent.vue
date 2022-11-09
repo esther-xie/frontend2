@@ -6,7 +6,8 @@
     class="dom"
   >
     <header>
-      <div class="actions">
+      <div class="actions"
+      v-if="$store.state.username === dom.author">
         <button
           v-if="editing"
           @click="submitEdit"
@@ -71,6 +72,18 @@
         </router-link>
       </p>
 
+      <div
+        v-if="!editing"
+        class="followers">
+        {{ this.followers.length }} followers
+      </div> 
+      <div
+        v-if="$store.state.username !== dom.author"
+        class="follow">
+        <FollowComponent
+        :dom="dom"/>
+      </div>
+
       <label 
         v-if="editing"
         for="description">
@@ -88,18 +101,6 @@
       >
         {{ dom.description }}
       </p>
-
-      <div
-        v-if="$store.state.username !== dom.author"
-        class="follow">
-        <FollowComponent
-        :dom="dom"/>
-      </div>
-      <div
-        v-if="!editing"
-        class="followers">
-        {{ this.followers.length }} followers
-      </div> 
 
       <p class="info">
         Created at {{ dom.dateModified }}
@@ -139,6 +140,9 @@ export default {
       followers:'',
       alerts: {} // Displays success/error messages encountered during freet modification
     };
+  },
+  created(){
+    this.getFollowers();
   },
   methods: {
     async getFollowers() {

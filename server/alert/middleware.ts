@@ -40,15 +40,13 @@ const isAlertExists = async (req: Request, res: Response, next: NextFunction) =>
 
 const isFreetAlertedbyUser = async (req: Request, res: Response, next: NextFunction) => {
   const alert = await AlertCollection.findOneByUserIdAndFreetId(req.session.userId, req.params.freetId);
-  if (alert) {
-    next();
-    return;
+  if (!alert) {
+    res.status(409).json({
+      error: `You have not alerted the freet.`
+    });
+    return
   }
-  res.status(409).json({
-    error: {
-      username: 'You have not alerted the freet.'
-    }
-  });
+  next();
 };
 
 /**

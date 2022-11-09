@@ -13,9 +13,9 @@ const store = new Vuex.Store({
     freets: [], // All freets created in the app
     doms: [],
     alldoms: [],
-    follows: [],
+    following: [],
     riskscore: null, // the value related to each freet (fight - peace)
-    allrisks: [], //All the alerts (risks) posted
+    allrisks: [], //All the alerts (risks) the user has posted
     username: null, // Username of the logged in user
     alerts: {} // global success/error messages encountered during submissions to non-visible forms
   },
@@ -57,6 +57,20 @@ const store = new Vuex.Store({
        */
       state.doms = doms;
     },
+    updateFollowing(state, following) {
+      /**
+       * Update the stored freets to the provided freets.
+       * @param doms - Freets to store
+       */
+      state.following = following;
+    },
+    updateRisk(state, allrisks) {
+      /**
+       * Update the stored freets to the provided freets.
+       * @param doms - Freets to store
+       */
+      state.allrisks = allrisks;
+    },
     async refreshFreets(state) {
       /**
        * Request the server for the currently available freets.
@@ -87,14 +101,15 @@ const store = new Vuex.Store({
        */
       const url = '/api/follows/following';
       const res = await fetch(url).then(async r => r.json());
-      state.follows = res;
+      state.following = res.following;
     },
-    async refreshFreetRisk(state) {
+    async refreshAllRisk(state) {
       /**
-       * Request the server for all the alerts (risks) posted.
+       * Request the server for all the alerts (risks) the user posted.
        */
-      const url = '/api/alerts';
+      const url = '/api/alerts/';
       const res = await fetch(url).then(async r => r.json());
+      console.log(res);
       state.allrisks = res;
     },
     async refreshRiskScore(state){

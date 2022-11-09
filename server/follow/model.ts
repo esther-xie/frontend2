@@ -32,7 +32,7 @@ const FollowSchema = new Schema<Follow>({
     // Use Types.ObjectId outside of the schema
     type: Schema.Types.ObjectId,
     required: true,
-    ref: 'Uer'
+    ref: 'User'
   },
   // The domId
   followingdomId: {

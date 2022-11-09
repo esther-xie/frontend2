@@ -1,15 +1,14 @@
 <template>
     <article>
-    <section class="followbutton">
-      <button 
-        v-if="$store.state.username !== null"
+    <section class="followsection">
+      <button class="followbutton"
+        v-if="$store.state.username !== null && allFollows==0"
         @click="addFollow"
       >
         follow
       </button>
-      <button 
-      v-if="$store.state.username !== null
-        "
+      <button class="followbutton"
+      v-if="$store.state.username !== null && allFollows==1"
         @click="removeFollow"
       >
         unfollow
@@ -37,28 +36,32 @@
       dom: {
         type: Object,
         required: true
-        }
+        },
     },
     data() {
       return {
+        exists: [],
         alerts: {} // Displays success/error messages encountered during freet modification
       };
     },
-
-    methods: {
-      existingfollow() {
-      /**
-       * Return if user has liked freet
-       */
-      const allfollows = this.$store.state.follows;
-      const exists = allfollows
-                       .filter(follow => follow.domId === this.dom._id)
-                       .length === 1;
-      return exists;
+    computed:{
+      allFollows(){
+        return this.$store.state.following.filter(follow => follow.followingdom === this.dom._id).length;
+      }
     },
+    methods: {
+    //   existingfollow() {
+    //   /**
+    //    * Return if user has liked freet
+    //    */
+    //   this.$store.commit('refreshAllFollowingDom');
+    //   const allFollows = this.$store.state.following;
+    //   console.log(this.$store.state.following);
+    //   const exists = allfollows
+    //                    .filter(follow => follow.followingdom === this.dom._id).length;
+    //   this.exists = exists;
+    // },
       async addFollow() {
-        console.log(this.dom._id);
-        console.log(this.$store.state.username);
         const requestOptions = {
           method: 'POST'
         };
@@ -72,9 +75,6 @@
           const message = 'Successfully followed dom!';
           this.$set(this.alerts, message, 'success');
           setTimeout(() => this.$delete(this.alerts, message), 3000);
-          // this.$store.commit('alert', {
-          //     message: `Successfully followed ${this.user.username}!`, status: 'success'
-          //   });
         } catch (e) {
           this.$set(this.alerts, e, 'error');
           setTimeout(() => this.$delete(this.alerts, e), 3000);
@@ -121,7 +121,7 @@
             const res = await r.json();
             throw new Error(res.error);
           }
-          this.$store.commit('refreshFollows'); 
+          this.$store.commit('refreshAllFollowingDom'); 
           params.callback();
         } catch (e) {
           this.$set(this.alerts, e, 'error');
@@ -129,7 +129,10 @@
         }
         
       }
-    }
+    },
+    // created(){
+    //   this.existingfollow();
+    // }
   };
   </script>
   

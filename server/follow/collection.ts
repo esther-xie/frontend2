@@ -24,8 +24,8 @@ class FollowCollection {
   static async addOne(followerId: Types.ObjectId | string, followingdomId: Types.ObjectId | string): Promise<HydratedDocument<Follow>> {
     const date = new Date();
     const follow = new FollowModel({
-      follower: followerId,
-      followingdom: followingdomId,
+      followerId: followerId,
+      followingdomId: followingdomId,
       dateCreated: date,
     });
     await follow.save(); // Saves freet to MongoDB

@@ -43,6 +43,11 @@
         </button>
       </div>
     </header>
+    <div
+        v-if="!editing"
+        class="followers">
+        {{ this.followers.length }} followers
+      </div> 
     <textarea
       v-if="editing"
       class="content"
@@ -94,19 +99,30 @@ export default {
   },
   data() {
     return {
+      followers:'',
       editing: false, // Whether or not this freet is in edit mode
       draft: this.freet.content, // Potentially-new content for this freet
       alerts: {} // Displays success/error messages encountered during freet modification
     };
   },
+  created(){
+    this.getFollowers();
+  },
   methods: {
-    numFollowers() {
-        /**
-         * Return number of followers for a particular dom
+    async getFollowers() {
+         /**
+         * Get the followers for a user
          */
-        const allFollows = this.$store.state.follows;
-        return allFollows.filter(follow => follow.dom._id === this.dom._id).length;
-      },
+        const url = `/api/follows/follower/${this.freet.domId._id}`;
+        try {
+          const r = await fetch(url);
+          const res = await r.json();
+          this.followers = res['response'] ? res['response'] : res['message']; //['data']; 
+        } catch (e) {
+          this.$set(this.alerts, e, 'error');
+          setTimeout(() => this.$delete(this.alerts, e), 3000);
+        }
+      }, 
     startEditing() {
       /**
        * Enables edit mode on this freet.
@@ -198,6 +214,10 @@ export default {
     position: relative;
     box-shadow: 0 0 0.5em rgb(255, 211, 211);
     border-radius: 0.5em;
+}
+
+.content{
+  margin-top:6px;
 }
 
 </style>

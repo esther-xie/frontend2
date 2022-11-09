@@ -23,6 +23,7 @@ export default {
     });
     this.$store.commit('refreshAllDoms');
     this.$store.commit('refreshAllFollowingDom');
+    this.$store.commit('refreshAllRisk');
     // Clear alerts on page refresh
     this.$store.state.alerts = {};
   }
@@ -101,8 +102,8 @@ a:hover {
 }
 
 .followers{
-  font-size: 80%;
-  color: rgb(80, 80, 80);
+  font-size: 75%;
+  color: rgb(100, 100, 100);
 }
 
 .info{

@@ -77,6 +77,17 @@ class AlertCollection {
       return AlertModel.find({freetId: freet._id}).populate('authorId');
     }
 
+      
+  /**
+   * Get all the alerts by the user
+   *
+   * @param {string} userId - The id of the freet
+   * @return {Promise<HydratedDocument<Alert>[]>} - An array of all of the alerts
+   */
+   static async findAllByUserId(userId: Types.ObjectId | string): Promise<Array<HydratedDocument<Alert>>> {
+    return AlertModel.find({authorId: userId}).populate('freetId');
+  }
+
    /**
    * Get the alert by the given author under the given freet
    *

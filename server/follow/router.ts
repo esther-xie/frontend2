@@ -53,11 +53,8 @@ router.get(
     const dom = await DomCollection.findOne(req.params.domId);
     const follower = await FollowCollection.findAllFollowers(dom._id);
     const response = follower.map(util.constructFollowResponse);
-
-    res.status(200).json({
-        message: 'Here are the followers of the dom',
-        following: response
-    });
+    console.log(response);
+    res.status(200).json({response});
   }
 );
 
