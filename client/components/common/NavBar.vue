@@ -5,56 +5,25 @@
 <template>
   <nav>
     <div class="left">
-      <img src="../../public/logo.svg">
-      <router-link to="/">
-        <h1 class="title">
-          Fritter
-        </h1>
-      </router-link>
-    </div>
-    <div class="center">
       <router-link to="/">
         Home
       </router-link>
     </div>
-    <div class="right">
-      <span class="nav-create">
-        <router-link
-          id="create"
-          v-if="$store.state.username"
-          to="/create"
+    <div class="center">
+      <router-link
+          to="/work"
         >
-          Create
+          Work
         </router-link>
-      </span>
+      </div>
+    <div class="right">
       <router-link
-        v-if="$store.state.username"
-        to="/dom"
+        to="/about"
       >
-        Doms
-      </router-link>
-      <router-link
-        v-if="$store.state.username"
-        to="/account"
-      >
-        Account
-      </router-link>
-      <router-link
-        v-else
-        to="/login"
-      >
-        Login
+        About
       </router-link>
     </div>
-    <section class="alerts">
-      <article
-        v-for="(status, alert, index) in $store.state.alerts"
-        :key="index"
-        :class="status"
-      >
-        <p>{{ alert }}</p>
-      </article>
-    </section>
+
   </nav>
 </template>
 

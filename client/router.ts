@@ -1,44 +1,21 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import FreetsPage from './components/Freet/FreetsPage.vue';
-import AccountPage from './components/Account/AccountPage.vue';
-import LoginPage from './components/Login/LoginPage.vue';
-import DomPage from './components/Dom/DomPage.vue';
-import CreateFreetPage from './components/Freet/CreateFreetPage.vue';
-import DomProfilePage from './components/Dom/DomProfilePage.vue';
+import HomePage from './components/Home/HomePage.vue';
+import AboutPage from './components/About/AboutPage.vue';
+import ProjectsGalleryPage from './components/Project/ProjectsGalleryPage.vue';
+import ProjectPage from './components/Project/ProjectPage.vue';
 import NotFound from './NotFound.vue';
 
 Vue.use(VueRouter);
 
 const routes = [
-  {path: '/', name: 'Home', component: FreetsPage},
-  {path: '/account', name: 'Account', component: AccountPage},
-  {path: '/login', name: 'Login', component: LoginPage},
-  {path: '/dom', name: 'Doms', component: DomPage},
-  {path: '/dom/profile/:author/:domname?', name: 'Dom Profile', component: DomProfilePage},
+  {path: '/', name: 'Home', component: HomePage},
+  {path: '/about', name: 'About', component: AboutPage},
+  {path: '/works', name: 'Works', component: ProjectsGalleryPage},
+  {path: '/works/:project?', name: ' ', component: ProjectPage},
   {path: '*', name: 'Not Found', component: NotFound},
-  {path: '/create', name: 'Create', component: CreateFreetPage}
 ];
 
 const router = new VueRouter({routes});
-
-/**
- * Navigation guards to prevent user from accessing wrong pages.
- */
-router.beforeEach((to, from, next) => {
-  if (router.app.$store) {
-    if (to.name === 'Login' && router.app.$store.state.username) {
-      next({name: 'Account'}); // Go to Account page if user navigates to Login and are signed in
-      return;
-    }
-
-    if (to.name === 'Account' && !router.app.$store.state.username) {
-      next({name: 'Login'}); // Go to Login page if user navigates to Account and are not signed in
-      return;
-    }
-  }
-
-  next();
-});
 
 export default router;
